@@ -3,6 +3,8 @@ Back-end / gestion budgetaire
 
 
 /*env*/
-DB_PORT= 6000
-DB_NAME="budget_management"
-URL_FRONT=http://localhost:8080
+create .env file and paste below
+PORT= 8080 
+DB_PORT= 27017
+DB_NAME="budget_management" 
+URL_FRONT=http://localhost:8000
