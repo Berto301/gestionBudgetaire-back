@@ -1,13 +1,13 @@
 const router = require('express').Router();
-const BullesController = require('../controllers/AdminController');
+const UsersController = require('../controllers/UsersController');
 
 router
     .route('/')
     // Insert a new Analytic
-    .post(BullesController.insert);
+    .post(UsersController.insert);
 router
     .route('/')
-    .get(BullesController.findAll)
+    .get(UsersController.findAll)
 
 
 module.exports = router;

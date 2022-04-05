@@ -1,9 +1,9 @@
 const express = require('express');
 // Routes
-const bullesRoute = require('./admin')
+const usersRoute = require('./users')
 const router = express.Router();
 
 
-router.use('/bulles', bullesRoute);
+router.use('/users', usersRoute);
 
 module.exports = router;
