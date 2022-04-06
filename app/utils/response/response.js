@@ -1,10 +1,9 @@
 const ResponseUtil = {};
 
-ResponseUtil.sendSuccess = (res, object) => {
+ResponseUtil.sendSuccess = (res,object) => {
   res.status(200).send({
     success: true,
-    message: 'Vos modifications ont bien été enregistrées',
-    data: object,
+    object,
   });
 };
 
@@ -23,17 +22,6 @@ ResponseUtil.sendWarning = (res, message) => {
   });
 };
 
-ResponseUtil.render = (res, page) => {
-  res.status(200).send(page);
-};
 
-ResponseUtil.sendSuccessWithStatus = (res, object, message, status) => {
-  res.status(200).send({
-    success: true,
-    status: status,
-    message: message,
-    data: object,
-  });
-};
 
 module.exports = ResponseUtil;
