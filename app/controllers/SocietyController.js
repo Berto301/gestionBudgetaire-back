@@ -39,5 +39,28 @@ class SocietyController {
         next(error);
       });
   };
+  update = async (req, res, next) => {
+    try {
+      const { name } = req.body;
+      const findGroup = await requestService.findOneBy({ name , _id: { $ne: req.params.id } }, Group);
+      if (findGroup?._id) {
+        res.json({ success: false, findGroup: true });
+        next();
+        return;
+      }
+
+      const expensesCreated = await requestService.create(req.body, Expense);
+
+      if (expensesCreated?._id) {
+        ResponseUtil.sendSuccess(res, {
+          success: true,
+          message: "Expense created",
+        });
+        next();
+      }
+    } catch (error) {
+      console.log("Creation expense", error);
+    }
+  };
 }
 module.exports = new SocietyController();

@@ -38,7 +38,7 @@ class ExpenseController {
         return;
       }
 
-      const expensesCreated = await requestService.create(req.body, Expense);
+      const expensesCreated = await requestService.updateById(req.body, Expense);
 
       if (expensesCreated?._id) {
         ResponseUtil.sendSuccess(res, {
