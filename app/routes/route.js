@@ -7,7 +7,6 @@ const societyRoute = require('./society')
 const recipeRoute = require('./recipe')
 const router = express.Router();
 
-
 router.use('/users', usersRoute);
 router.use('/expense', expenseRoute);
 router.use('/groups', groupsRoute);

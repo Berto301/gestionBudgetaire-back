@@ -2,12 +2,16 @@ const router = require('express').Router();
 const UsersController = require('../controllers/UsersController');
 
 router
-    .route('/')
-    // Insert a new Analytic
-    .post(UsersController.insert);
+   .route('/:id')
+   .get(UsersController.getById)
+   .put(UsersController.updateById)
+
 router
-    .route('/')
-    .get(UsersController.findAll)
+    .route('/register')
+    .post(UsersController.register);
+router
+    .route('/login')
+    .post(UsersController.login)
 
 
 module.exports = router;

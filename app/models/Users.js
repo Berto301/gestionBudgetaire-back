@@ -1,4 +1,5 @@
 const mongoose = require ( "mongoose" );
+const Schema = mongoose.Schema;
 const userSchema = new mongoose.Schema ( {
     name:{
         type: String
@@ -12,9 +13,20 @@ const userSchema = new mongoose.Schema ( {
     password:{
         type:String
     },
+    phone:{
+        type:String
+    },
     isAdmin:{
         type: Boolean // To check if an user is a superAdmin
     },
+    groupId:{
+      type: Schema.Types.ObjectId,
+      ref: "Group"
+    },
+    societyId:{
+      type: Schema.Types.ObjectId,
+      ref: "Society"
+    }
     //groupId
     //societyId:default:null
     //photo

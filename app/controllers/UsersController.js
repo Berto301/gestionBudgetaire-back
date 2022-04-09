@@ -11,10 +11,45 @@ const stream_users = "reload_users";
 class UsersController {
   constructor() {}
 
-  getById = async (req, res, next) => {};
+  getById = async (req, res, next) => {
+    try {
+      const {id} = req.params
+      if(!id) return ResponseUtil.sendError(res,{
+        message: "Users not found",
+      })
+      const users = await requestService.findOneBy({_id:id},Users)
+      if(users?._id){
+        ResponseUtil.sendSuccess(res,{users})
+      }
+    } catch (error) {
+      console.log("errors on getting data users",error)
+    }
+  };
+
+  updateById = async (req,res,next)=>{
+    try {
+      const {id} = req.params
+      if(!id) return res.json({success:false,message:"Users not found"})
+      const usersFinded = await requestService.findOneBy({ _id: id }, Users)
+      const{name,email,phone,firstname} = req.body
+      if(usersFinded?._id){
+        usersFinded.name= name
+        usersFinded.email = email
+        usersFinded.phone = phone
+        usersFinded.firstname = firstname
+        await usersFinded.save()
+        .then((users)=>{
+          ResponseUtil.sendSuccess(res,users)
+          next()
+        })
+      }
+    } catch (error) {
+      console.log("error updating groups",error)
+    }
+  }
   register = async (req, res, next) => {
     try {
-      const { userData, groupData, societyData } = req.body;
+      const { users:userData, groups:groupData, societyData } = req.body;
 
       if (!userData && (!groupData || !societyData)) {
         return ResponseUtil.sendError(res, {
@@ -59,9 +94,9 @@ class UsersController {
 
       /*Creation users*/
       const dataUser = {
-        ...societyData,
-        //groupId:groupCreated?._id || groupData?._id || groupUpdated?._id || null,
-        //societyId:societyCreated?._id || societyData?._id || societyUpdated?._id || null
+        ...userData,
+        groupId:groupCreated?._id || groupData?._id || groupUpdated?._id || null,
+        societyId:societyCreated?._id || societyData?._id || societyUpdated?._id || null
       };
       if (userData?._id) {
         userUpdated = await requestService.updateById(
@@ -71,6 +106,27 @@ class UsersController {
         );
         data.users = userUpdated;
       } else {
+        //verification email 
+        const userFinded = await requestService.findOneBy({email:userData.email},Users)
+
+        if(userFinded?._id){
+          // delete group and Society created if there as an error 
+          if(groupCreated?._id || societyCreated?._id){
+            await Promise.all([
+              requestService.findOneAndDeleteBy({_id:groupCreated?._id},Group),
+              requestService.findOneAndDeleteBy({_id:societyCreated?._id},Society)
+           ])
+          }
+          
+
+          return res.json({success:false,message:"Email already in used with an users"})
+        }
+        /**Cryptage password */
+        const salt = await bcrypt.genSalt(); //generator 
+        const passwordHash = await bcrypt.hash(userData.password, salt);
+        //change password to hash
+        dataUser.password = passwordHash
+        /**End cryptage*/
         userCreated = await requestService.create(dataUser, Users);
         data.users = userCreated;
       }
@@ -92,6 +148,7 @@ class UsersController {
     try {
       try {
         const { email, password } = req.body;
+        console.log(req.body)
         const users = await requestService.findOneBy({ email }, Users);
         if (!users) {
           res.json({ message: "Email not found", success: false });
@@ -120,7 +177,7 @@ class UsersController {
               }
             );
           } else {
-            res.json({ success: false, message: "Invalid passowrd" });
+            res.json({ success: false, message: "Invalid password" });
             next();
           }
         }
