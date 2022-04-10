@@ -45,9 +45,9 @@
      * @param {*} population
      * retrieve all result
      */
-    findAll = async (condition, Model, population = null) => {
+    findAll = async (condition, Model) => {
       try {
-        let responses = await Model.find(condition).populate(population);
+        let responses = await Model.find(condition);
         return responses;
       } catch (e) {
         throw new Error(e);

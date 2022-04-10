@@ -1,6 +1,6 @@
 const mongoose = require ( "mongoose" );
 const Schema = mongoose.Schema;
-const userSchema = new mongoose.Schema ( {
+const userSchema = new Schema ( {
     name:{
         type: String
     },
@@ -27,8 +27,6 @@ const userSchema = new mongoose.Schema ( {
       type: Schema.Types.ObjectId,
       ref: "Society"
     }
-    //groupId
-    //societyId:default:null
     //photo
 }, { timestamps: true });
 const Users = mongoose.model ( "Users", userSchema );

@@ -1,5 +1,7 @@
 const mongoose = require ( "mongoose" );
-const societySchema = new mongoose.Schema ( {
+;
+const Schema = mongoose.Schema;
+const societySchema = new Schema ( {
     name:{
         type: String
     },
@@ -24,18 +26,27 @@ const societySchema = new mongoose.Schema ( {
     accountBank: {
         type: String
     },
-    Bank:{
+    bank:{
         type: String
     },
-    Immatriculation:{
+    immatriculation:{
         type: String,
         unique:true
     },
+    structure:{
+        type: String,
+    },
     turnover:{
         type:Number
-    }
-    //Entry:[_id]:null
-    //Out:[_id]:null
+    },
+    groupId:{
+      type: Schema.Types.ObjectId,
+      ref: "Group"
+    },
+    adminId:{
+      type: Schema.Types.ObjectId,
+      ref: "Users"
+    },
     //photo
 }, { timestamps: true });
 const Society = mongoose.model ( "Society", societySchema );

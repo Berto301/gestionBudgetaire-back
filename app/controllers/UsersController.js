@@ -49,14 +49,13 @@ class UsersController {
   }
   register = async (req, res, next) => {
     try {
-      const { users:userData, groups:groupData, societyData } = req.body;
+      const { users:userData, groups:groupData, society:societyData } = req.body;
 
       if (!userData && (!groupData || !societyData)) {
         return ResponseUtil.sendError(res, {
           message: "Please enter informations",
         });
       }
-
       let groupCreated = {},
         societyCreated = {},
         groupUpdated = {},
@@ -79,7 +78,7 @@ class UsersController {
       }
 
       if (societyData?.name) {
-        if (groupData?._id) {
+        if (societyData?._id) {
           societyUpdated = await requestService.updateById(
             societyData?._id,
             societyData,
@@ -129,6 +128,17 @@ class UsersController {
         /**End cryptage*/
         userCreated = await requestService.create(dataUser, Users);
         data.users = userCreated;
+
+        /*Update society*/
+        if(!societyData?.adminId){
+            if(societyUpdated?._id || societyCreated?._id){
+              const societyToUpdate = await requestService.findOneBy({_id:societyUpdated?._id || societyCreated?._id},Society)
+              if(societyToUpdate?._id){
+                societyToUpdate.adminId = userCreated?._id
+                await societyToUpdate.save()
+              }
+            }  
+        }
       }
       if (data?.users && (data?.group || data?.society)) {
         ResponseUtil.sendSuccess(res, {
@@ -148,7 +158,6 @@ class UsersController {
     try {
       try {
         const { email, password } = req.body;
-        console.log(req.body)
         const users = await requestService.findOneBy({ email }, Users);
         if (!users) {
           res.json({ message: "Email not found", success: false });

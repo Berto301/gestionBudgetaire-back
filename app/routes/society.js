@@ -4,10 +4,11 @@ const SocietyController = require('../controllers/SocietyController');
 router
     .route('/:id')
     .get(SocietyController.getById)
-    router
-    .route('/:id')
     .put(SocietyController.update)
     .delete(SocietyController.delete);
 
+router
+    .route('/group/:id')
+    .get(SocietyController.getByGroupId)
 
 module.exports = router;
