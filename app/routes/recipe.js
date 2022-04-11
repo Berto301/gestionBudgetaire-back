@@ -5,18 +5,18 @@ router
     .route('/')
     // Insert a new Analytic
     .post(RecipeController.create);
-router
-    .route('/:id')
-    .get(RecipeController.getById)
 
 router
-    .route('/getBySociety/:id')
+    .route('/society/:id')
     .get(RecipeController.getRecipeBySociety)
+
+router
+    .route('/group/:id')
+    .get(RecipeController.getByGroupId)
+    
 router
     .route('/:id')
     .get(RecipeController.getById)
-router
-    .route('/:id')
     .put(RecipeController.update)
     .delete(RecipeController.delete);
 

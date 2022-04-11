@@ -1,5 +1,6 @@
 const mongoose = require ( "mongoose" );
-const recipeSchema = new mongoose.Schema ( {
+const Schema = mongoose.Schema;
+const recipeSchema = new Schema ( {
     name:{
         type: String
     },
@@ -17,6 +18,22 @@ const recipeSchema = new mongoose.Schema ( {
     },
     transactionNumber:{
         type: Number
+    },
+    
+    estimation:{
+        type:Number
+    },
+
+    description:{
+        type:String
+    },
+    groupId:{
+      type: Schema.Types.ObjectId,
+      ref: "Group"
+    },
+    societyId:{
+      type: Schema.Types.ObjectId,
+      ref: "Society"
     }
 }, { timestamps: true });
 const Recipe = mongoose.model ( "Recipe", recipeSchema );

@@ -7,20 +7,19 @@ class RecipeController {
   constructor() {}
   create = async (req, res, next) => {
     try {
+      const io = req.app.get('socket');
       const { name } = req.body;
       const findRecipe = await requestService.findOneBy({ name }, Recipe);
       if (findRecipe?._id) {
-        res.json({ success: false, findRecipe: true });
+        res.json({ success: false, message:"Name already used"});
         next();
         return;
       }
 
       const recipesCreated = await requestService.create(req.body, Recipe);
       if (recipesCreated?._id) {
-        ResponseUtil.sendSuccess(res, {
-          success: true,
-          message: "Recipe created",
-        });
+        ResponseUtil.sendSuccess(res,recipesCreated);  
+        io.emit("reload_information",recipesCreated?.groupId)
         next();
       }
     } catch (error) {
@@ -30,24 +29,22 @@ class RecipeController {
 
   update = async (req, res, next) => {
     try {
-      const { name } = req.body;
+      const { name,_id } = req.body;
+      const io = req.app.get('socket');
       const findRecipe = await requestService.findOneBy(
         { name, _id: { $ne: req.params.id } },
         Recipe
       );
       if (findRecipe?._id) {
-        res.json({ success: false, findRecipe: true });
+        res.json({ success: false, message:"Name already used"});
         next();
         return;
       }
+      const recipesUpdated = await requestService.updateById({_id},req.body,Recipe);
 
-      const RecipesCreated = await requestService.create(req.body, Recipe);
-
-      if (RecipesCreated?._id) {
-        ResponseUtil.sendSuccess(res, {
-          success: true,
-          message: "Recipe created",
-        });
+      if (recipesUpdated?._id) {
+        ResponseUtil.sendSuccess(res, recipesUpdated);
+        io.emit("reload_information",recipesUpdated?.groupId)
         next();
       }
     } catch (error) {
@@ -56,16 +53,15 @@ class RecipeController {
   };
 
   delete = async (req, res, next) => {
-    //const io = req.app.get('socket');
+    const io = req.app.get('socket');
+    /* verification if a recipe is in relation with a society*/
+
+    //end verification
     await requestService
       .findOneAndDeleteBy({ _id: req.params.id }, Recipe)
       .then((response) => {
-        // io.emit(GROUP_EVENT, response.Enterprise[0]);
-        ResponseUtil.sendSuccess(res, {
-          success: true,
-          data: response,
-          message: "Recipe Deleted",
-        });
+        ResponseUtil.sendSuccess(res,response);
+        io.emit("reload_information",response?.groupId)
         next();
       })
       .catch((error) => {
@@ -79,7 +75,7 @@ class RecipeController {
     await requestService
       .findOneBy({ _id: req.params.id }, Recipe)
       .then((_recipeData) => {
-        ResponseUtil.sendSuccess(res, { data: _recipeData });
+        ResponseUtil.sendSuccess(res,  _recipeData );
         next();
       })
       .catch((error) => {
@@ -103,5 +99,19 @@ class RecipeController {
       next(err);
     }
   };
+
+  getByGroupId = async (req,res,next) =>{
+      try {
+      const data = await requestService.findAll(
+        { groupId: mongoose.Types.ObjectId(req.params.id) },
+        Recipe
+      );
+      ResponseUtil.sendSuccess(res, data);
+      next();
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  }
 }
 module.exports = new RecipeController();
