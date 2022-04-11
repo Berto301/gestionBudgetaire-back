@@ -26,6 +26,7 @@ class GroupController {
   };
   updateById = async (req,res,next)=>{
     try {
+      const io = req.app.get('socket');
       const {id} = req.params
       if(!id) return res.json({success:false,message:"Group not found"})
       const groupFinded = await requestService.findOneBy({ _id: id }, Group)
@@ -38,6 +39,7 @@ class GroupController {
         await groupFinded.save()
         .then((groups)=>{
           ResponseUtil.sendSuccess(res,groups)
+          io.emit("reload_information",groups?._id)
           next()
         })
       }

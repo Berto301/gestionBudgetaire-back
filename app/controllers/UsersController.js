@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const keys = require("../config/secretKeys");
 
-const stream_users = "reload_users";
+const stream_users = "reload_information";
 class UsersController {
   constructor() {}
 
@@ -28,6 +28,7 @@ class UsersController {
 
   updateById = async (req,res,next)=>{
     try {
+      const io = req.app.get('socket');
       const {id} = req.params
       if(!id) return res.json({success:false,message:"Users not found"})
       const usersFinded = await requestService.findOneBy({ _id: id }, Users)
@@ -40,6 +41,7 @@ class UsersController {
         await usersFinded.save()
         .then((users)=>{
           ResponseUtil.sendSuccess(res,users)
+          io.emit("reload_information",users?.groupId)
           next()
         })
       }
@@ -50,7 +52,7 @@ class UsersController {
   register = async (req, res, next) => {
     try {
       const { users:userData, groups:groupData, society:societyData } = req.body;
-
+      const io = req.app.get('socket');
       if (!userData && (!groupData || !societyData)) {
         return ResponseUtil.sendError(res, {
           message: "Please enter informations",
@@ -94,7 +96,7 @@ class UsersController {
       /*Creation users*/
       const dataUser = {
         ...userData,
-        groupId:groupCreated?._id || groupData?._id || groupUpdated?._id || null,
+        groupId:groupCreated?._id || groupData?._id || groupUpdated?._id || societyData?.groupId || null,
         societyId:societyCreated?._id || societyData?._id || societyUpdated?._id || null
       };
       if (userData?._id) {
@@ -139,6 +141,7 @@ class UsersController {
               }
             }  
         }
+
       }
       if (data?.users && (data?.group || data?.society)) {
         ResponseUtil.sendSuccess(res, {
@@ -146,6 +149,7 @@ class UsersController {
           success: true,
           data,
         });
+        io.emit("reload_information",data?.users?.groupId)
         next();
         return;
       }
