@@ -12,9 +12,6 @@ const recipeBySocietySchema = new Schema ( {
     description:{
         type:String
     },
-    transactionNumber:{
-        type: Number
-    },
     groupId:{
       type: Schema.Types.ObjectId,
       ref: "Group"
@@ -23,7 +20,7 @@ const recipeBySocietySchema = new Schema ( {
       type: Schema.Types.ObjectId,
       ref: "Society"
     },
-    salesId:{
+    recipeId:{
       type: Schema.Types.ObjectId,
       ref: "Recipe"
     }

@@ -1,29 +1,22 @@
 const requestService = require("../services/request");
-const Recipe = require("../models/Recipe");
+const RecipeBySociety = require("../models/RecipeBySociety");
 const ResponseUtil = require("../utils/response/response");
 const mongoose = require("mongoose");
+const RecipeService = require("../services/recipe.service")
 
 class RecipeController {
   constructor() {}
   create = async (req, res, next) => {
     try {
       const io = req.app.get('socket');
-      const { name } = req.body;
-      const findRecipe = await requestService.findOneBy({ name }, Recipe);
-      if (findRecipe?._id) {
-        res.json({ success: false, message:"Name already used"});
-        next();
-        return;
-      }
-
-      const recipesCreated = await requestService.create(req.body, Recipe);
+      const recipesCreated = await requestService.create(req.body, RecipeBySociety);
       if (recipesCreated?._id) {
         ResponseUtil.sendSuccess(res,recipesCreated);  
-        io.emit("reload_information",recipesCreated?.groupId)
+        io.emit("reload_information_society",recipesCreated?.societyId)
         next();
       }
     } catch (error) {
-      console.log("Creation Recipe", error);
+      console.log("Creation RecipeBySociety", error);
     }
   };
 
@@ -33,22 +26,22 @@ class RecipeController {
       const io = req.app.get('socket');
       const findRecipe = await requestService.findOneBy(
         { name, _id: { $ne: req.params.id } },
-        Recipe
+        RecipeBySociety
       );
       if (findRecipe?._id) {
         res.json({ success: false, message:"Name already used"});
         next();
         return;
       }
-      const recipesUpdated = await requestService.updateById({_id},req.body,Recipe);
+      const recipesUpdated = await requestService.updateById({_id},req.body,RecipeBySociety);
 
       if (recipesUpdated?._id) {
         ResponseUtil.sendSuccess(res, recipesUpdated);
-        io.emit("reload_information",recipesUpdated?.groupId)
+        io.emit("reload_information_society",recipesUpdated?.societyId)
         next();
       }
     } catch (error) {
-      console.log("Creation Recipe", error);
+      console.log("Update Recipe", error);
     }
   };
 
@@ -58,10 +51,10 @@ class RecipeController {
 
     //end verification
     await requestService
-      .findOneAndDeleteBy({ _id: req.params.id }, Recipe)
+      .findOneAndDeleteBy({ _id: req.params.id }, RecipeBySociety)
       .then((response) => {
         ResponseUtil.sendSuccess(res,response);
-        io.emit("reload_information",response?.groupId)
+        io.emit("reload_information_society",response?.societyId)
         next();
       })
       .catch((error) => {
@@ -73,7 +66,7 @@ class RecipeController {
 
   getById = async (req, res, next) => {
     await requestService
-      .findOneBy({ _id: req.params.id }, Recipe)
+      .findOneBy({ _id: req.params.id }, RecipeBySociety)
       .then((_recipeData) => {
         ResponseUtil.sendSuccess(res,  _recipeData );
         next();
@@ -87,10 +80,15 @@ class RecipeController {
 
   getRecipeBySociety = async (req, res, next) => {
     try {
-      const data = await requestService.findOneBy(
-        { societyId: mongoose.Types.ObjectId(req.params.id) },
-        Recipe
-      );
+      const data = await RecipeBySociety
+      .find({societyId:mongoose.Types.ObjectId(req.params.id)})
+      .populate("recipeId")
+      //await RecipeService.getAllRecipesBy(req.params.id)
+      // await RecipeBySociety
+      // .find({societyId:mongoose.Types.ObjectId(req.params.id)})
+      // .populate("recipeId")
+
+      console.log(data)
       ResponseUtil.sendSuccess(res, data);
       next();
     } catch (err) {
@@ -104,7 +102,7 @@ class RecipeController {
       try {
       const data = await requestService.findAll(
         { groupId: mongoose.Types.ObjectId(req.params.id) },
-        Recipe
+        RecipeBySociety
       );
       ResponseUtil.sendSuccess(res, data);
       next();

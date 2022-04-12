@@ -1,5 +1,5 @@
 const requestService = require("../services/request");
-const Expense = require("../models/Expense");
+const SalesBySociety = require("../models/SalesBySociety");
 const ResponseUtil = require("../utils/response/response");
 const mongoose = require("mongoose");
 
@@ -8,47 +8,30 @@ class ExpenseController {
   create = async (req, res, next) => {
     try {
       const io = req.app.get('socket');
-      const { name } = req.body;
-      const findSales = await requestService.findOneBy({ name }, Expense);
-      if (findSales?._id) {
-        res.json({ success: false, message:"Name already used"});
-        next();
-        return;
-      }
-
-      const salesCreated = await requestService.create(req.body, Expense);
+      const salesCreated = await requestService.create(req.body, SalesBySociety);
       if (salesCreated?._id) {
         ResponseUtil.sendSuccess(res,salesCreated);  
-        io.emit("reload_information",salesCreated?.groupId)
+        io.emit("reload_information_society",salesCreated?.societyId)
         next();
       }
     } catch (error) {
-      console.log("Creation Expense", error);
+      console.log("Creation SalesBySociety", error);
     }
   };
 
   update = async (req, res, next) => {
     try {
-      const { name,_id } = req.body;
+      const { _id } = req.body;
       const io = req.app.get('socket');
-      const findSales = await requestService.findOneBy(
-        { name, _id: { $ne: req.params.id } },
-        Expense
-      );
-      if (findSales?._id) {
-        res.json({ success: false, message:"Name already used"});
-        next();
-        return;
-      }
-      const salesUpdated = await requestService.updateById({_id},req.body,Expense);
+      const salesUpdated = await requestService.updateById({_id},req.body,SalesBySociety);
 
       if (salesUpdated?._id) {
         ResponseUtil.sendSuccess(res, salesUpdated);
-        io.emit("reload_information",salesUpdated?.groupId)
+        io.emit("reload_information_society",salesUpdated?.societyId)
         next();
       }
     } catch (error) {
-      console.log("Creation Expense", error);
+      console.log("Update SalesBySociety", error);
     }
   };
 
@@ -58,10 +41,10 @@ class ExpenseController {
 
     //end verification
     await requestService
-      .findOneAndDeleteBy({ _id: req.params.id }, Expense)
+      .findOneAndDeleteBy({ _id: req.params.id }, SalesBySociety)
       .then((response) => {
         ResponseUtil.sendSuccess(res,response);
-        io.emit("reload_information",response?.groupId)
+        io.emit("reload_information_society",response?.societyId)
         next();
       })
       .catch((error) => {
@@ -73,7 +56,7 @@ class ExpenseController {
 
   getById = async (req, res, next) => {
     await requestService
-      .findOneBy({ _id: req.params.id }, Expense)
+      .findOneBy({ _id: req.params.id }, SalesBySociety)
       .then((_salesData) => {
         ResponseUtil.sendSuccess(res,  _salesData );
         next();
@@ -87,15 +70,14 @@ class ExpenseController {
 
   getExpenseBySociety = async (req, res, next) => {
     try {
-      const data = await requestService.findOneBy(
-        { societyId: mongoose.Types.ObjectId(req.params.id) },
-        Expense
-      );
+      const data = await SalesBySociety
+      .find({societyId:mongoose.Types.ObjectId(req.params.id)})
+      .populate("salesId")
       ResponseUtil.sendSuccess(res, data);
       next();
     } catch (err) {
       console.error(err);
-      ResponseUtil.sendError(res, "Une erreur s'est produite");
+      ResponseUtil.sendError(res, "An error occured");
       next(err);
     }
   };
@@ -104,7 +86,7 @@ class ExpenseController {
       try {
       const data = await requestService.findAll(
         { groupId: mongoose.Types.ObjectId(req.params.id) },
-        Expense
+        SalesBySociety
       );
       ResponseUtil.sendSuccess(res, data);
       next();

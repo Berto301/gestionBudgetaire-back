@@ -5,12 +5,12 @@ const expenseSchema = new Schema ( {
     name:{
         type: String
     },
-    realValue: {
-        type: Number
-    },
-    date:{
-        type: Date
-    },
+    // realValue: {
+    //     type: Number
+    // },
+    // date:{
+    //     type: Date
+    // },
     icon:{
         type: String
     },
@@ -20,9 +20,9 @@ const expenseSchema = new Schema ( {
     description:{
         type:String
     },
-    transactionNumber:{
-        type: Number
-    },
+    // transactionNumber:{
+    //     type: Number
+    // },
     estimation:{
         type:Number
     },
@@ -30,10 +30,10 @@ const expenseSchema = new Schema ( {
       type: Schema.Types.ObjectId,
       ref: "Group"
     },
-    societyId:{
-      type: Schema.Types.ObjectId,
-      ref: "Society"
-    }
+    // societyId:{
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Society"
+    // }
 }, { timestamps: true });
 const Expense = mongoose.model ( "Expense", expenseSchema );
 module.exports = Expense;

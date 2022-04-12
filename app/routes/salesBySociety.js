@@ -1,24 +1,24 @@
 const router = require('express').Router();
-const ExpenseController = require('../controllers/ExpenseController');
+const SalesBySocietyController = require('../controllers/SalesBySocietyController');
 
 router
     .route('/')
     // Insert a new Analytic
-    .post(ExpenseController.create);
+    .post(SalesBySocietyController.create);
 
 router
     .route('/society/:id')
-    .get(ExpenseController.getExpenseBySociety)
+    .get(SalesBySocietyController.getExpenseBySociety)
 
 router
     .route('/group/:id')
-    .get(ExpenseController.getByGroupId)
+    .get(SalesBySocietyController.getByGroupId)
     
 router
     .route('/:id')
-    .get(ExpenseController.getById)
-    .put(ExpenseController.update)
-    .delete(ExpenseController.delete);
+    .get(SalesBySocietyController.getById)
+    .put(SalesBySocietyController.update)
+    .delete(SalesBySocietyController.delete);
 
 
 module.exports = router;
