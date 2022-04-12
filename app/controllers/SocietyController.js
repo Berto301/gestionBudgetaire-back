@@ -49,7 +49,7 @@ class SocietyController {
       const io = req.app.get('socket');
       const {id} = req.params
       if(!id) return ResponseUtil.sendError(res,{message:"Society not found"})
-      const societySameMatriculation = await requestService.findAll({immatriculation:req.body.immatriculation},Society)
+      const societySameMatriculation = await requestService.findAll({immatriculation:req.body.immatriculation , _id :{ $ne: id }},Society)
       if(societySameMatriculation?.length){
         return res.json({success:false,message:"Immatriculation is already assigned to a company"})
       }
