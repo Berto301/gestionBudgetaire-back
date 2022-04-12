@@ -5,18 +5,18 @@ router
     .route('/')
     // Insert a new Analytic
     .post(ExpenseController.create);
-router
-    .route('/:id')
-    .get(ExpenseController.getById)
 
 router
-    .route('/getBySociety/:id')
+    .route('/society/:id')
     .get(ExpenseController.getExpenseBySociety)
+
+router
+    .route('/group/:id')
+    .get(ExpenseController.getByGroupId)
+    
 router
     .route('/:id')
     .get(ExpenseController.getById)
-router
-    .route('/:id')
     .put(ExpenseController.update)
     .delete(ExpenseController.delete);
 

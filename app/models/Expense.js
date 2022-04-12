@@ -8,9 +8,6 @@ const expenseSchema = new Schema ( {
     realValue: {
         type: Number
     },
-    c: {
-        type: Number
-    },
     date:{
         type: Date
     },
