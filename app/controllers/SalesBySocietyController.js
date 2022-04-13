@@ -2,6 +2,7 @@ const requestService = require("../services/request");
 const SalesBySociety = require("../models/SalesBySociety");
 const ResponseUtil = require("../utils/response/response");
 const mongoose = require("mongoose");
+const SalesService = require("../services/sales.service")
 
 class ExpenseController {
   constructor() {}
@@ -70,9 +71,7 @@ class ExpenseController {
 
   getExpenseBySociety = async (req, res, next) => {
     try {
-      const data = await SalesBySociety
-      .find({societyId:mongoose.Types.ObjectId(req.params.id)})
-      .populate("salesId")
+       const data = await SalesService.getAllSalesBy(req.params.id)
       ResponseUtil.sendSuccess(res, data);
       next();
     } catch (err) {

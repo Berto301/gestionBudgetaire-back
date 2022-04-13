@@ -4,9 +4,6 @@ const recipeSchema = new Schema ( {
     name:{
         type: String
     },
-    // realValue: {
-    //     type: Number
-    // },
     date:{
         type: Date
     },
@@ -16,10 +13,6 @@ const recipeSchema = new Schema ( {
     color:{
         type: String
     },
-    // transactionNumber:{
-    //     type: Number
-    // },
-    
     estimation:{
         type:Number
     },
@@ -31,10 +24,6 @@ const recipeSchema = new Schema ( {
       type: Schema.Types.ObjectId,
       ref: "Group"
     },
-    // societyId:{
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Society"
-    // }
 }, { timestamps: true });
 const Recipe = mongoose.model ( "Recipe", recipeSchema );
 module.exports = Recipe;

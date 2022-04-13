@@ -80,15 +80,7 @@ class RecipeController {
 
   getRecipeBySociety = async (req, res, next) => {
     try {
-      const data = await RecipeBySociety
-      .find({societyId:mongoose.Types.ObjectId(req.params.id)})
-      .populate("recipeId")
-      //await RecipeService.getAllRecipesBy(req.params.id)
-      // await RecipeBySociety
-      // .find({societyId:mongoose.Types.ObjectId(req.params.id)})
-      // .populate("recipeId")
-
-      console.log(data)
+      const data = await RecipeService.getAllRecipesBy(req.params.id)
       ResponseUtil.sendSuccess(res, data);
       next();
     } catch (err) {
