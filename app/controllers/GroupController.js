@@ -1,11 +1,15 @@
 const requestService = require("../services/request");
 const Group = require("../models/Group");
+const StatisticService = require("../services/statistique")
 const ResponseUtil = require("../utils/response/response");
+const {COLORS} = require("../utils/_constants")
 
 class GroupController {
   constructor() {}
   
-
+  geRandomValue (array){
+    return array[Math.floor(Math.random() * array.length)]
+  }
   getById = async (req, res, next) => {
     try {
       await requestService
@@ -49,6 +53,36 @@ class GroupController {
   }
  
 
-  
+  getStatisticsById = async (req,res,next)=>{
+    try{
+       
+
+     let [types,turnover,recipes,sales] = await Promise.all([
+       StatisticService.getAllSocietyByType(req.params.id),
+       StatisticService.getAllSocietyByTurnOver(req.params.id),
+       StatisticService.getRecipesByGroup(req.params.id),
+       StatisticService.getSalesByGroup(req.params.id)
+       ])
+
+     for(let type of types){
+       type.backgroundColor = this.geRandomValue(COLORS)
+     }
+
+     for(let item of turnover){
+       item.backgroundColor = this.geRandomValue(COLORS)
+     }
+
+     const data = {
+       types,
+       turnover,
+       recipes,
+       sales
+     }
+     
+     ResponseUtil.sendSuccess(res,data)
+    }catch(err){
+      console.log(err)
+    }
+  }
 }
 module.exports = new GroupController();

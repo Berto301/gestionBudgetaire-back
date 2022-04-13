@@ -10,5 +10,8 @@ router
 router
     .route('/group/:id')
     .get(SocietyController.getByGroupId)
+router
+    .route('/statistic/:id')
+    .get(SocietyController.getStatisticsById)
 
 module.exports = router;

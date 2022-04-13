@@ -2,6 +2,7 @@ const requestService = require("../services/request");
 const Society = require("../models/Society");
 const Users = require("../models/Users")
 const ResponseUtil = require("../utils/response/response");
+const StatisticService = require("../services/statistique")
 
 class SocietyController {
   constructor() {}
@@ -89,6 +90,24 @@ class SocietyController {
       const society = await Society.find({groupId:id}).populate("adminId")
       ResponseUtil.sendSuccess(res,society)
       
+    }catch(err){
+      console.log(err)
+    }
+  }
+  getStatisticsById = async (req,res,next)=>{
+    try{
+       
+
+     const [sales,recipes] = await Promise.all([
+       StatisticService.getSalesBySociety(req.params.id),
+       StatisticService.getRecipesBySociety(req.params.id)
+       ])
+
+     const data = {
+       sales,
+       recipes
+     }
+     ResponseUtil.sendSuccess(res,data)
     }catch(err){
       console.log(err)
     }
