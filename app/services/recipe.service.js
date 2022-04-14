@@ -26,15 +26,15 @@ class RecipeService {
       },
 
       {
-        $group:{
-          _id:"$recipe._id",
-          name:{$first:"$recipe.name"},
-          icon:{$first:"$recipe.icon"},
-          color:{$first:"$recipe.color"},
-          estimation:{$first:"$recipe.estimation"},
-          realValue:{$sum:"$realValue"},
-          count:{$sum:1}
-        }
+        $group: {
+          _id: "$recipe._id",
+          name: { $first: "$recipe.name" },
+          icon: { $first: "$recipe.icon" },
+          color: { $first: "$recipe.color" },
+          estimation: { $first: "$recipe.estimation" },
+          realValue: { $sum: "$realValue" },
+          count: { $sum: 1 },
+        },
       },
     ]);
   }
