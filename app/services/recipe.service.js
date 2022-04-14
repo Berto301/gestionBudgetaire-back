@@ -34,6 +34,7 @@ class RecipeService {
           estimation: { $first: "$recipe.estimation" },
           realValue: { $sum: "$realValue" },
           count: { $sum: 1 },
+          idRecipes:{$push:"$_id"}
         },
       },
     ]);

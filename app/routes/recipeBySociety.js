@@ -20,5 +20,9 @@ router
     .put(RecipeBySocietyController.update)
     .delete(RecipeBySocietyController.delete);
 
+router
+    .route('/delete-recipes/:ids')
+    .delete(RecipeBySocietyController.deleteMoreRecipes)
+
 
 module.exports = router;

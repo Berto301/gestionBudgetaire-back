@@ -54,6 +54,31 @@ class ExpenseController {
         next(error);
       });
   };
+  deleteMoreSales = async(req, res , next)=>{
+    const io = req.app.get('socket')
+    try{
+        const ids = JSON.parse(req.params.ids)
+        let idDeleted = 0
+        let societyId =null
+        if(ids?.length){
+          for(let id of ids){
+            await requestService.findOneAndDeleteBy({_id: mongoose.Types.ObjectId(id)},SalesBySociety)
+            .then((data)=>{
+              idDeleted++
+              societyId = data.societyId
+            })
+          }
+          if(idDeleted > 0){
+            ResponseUtil.sendSuccess(res,societyId)
+            io.emit("reload_information_society",societyId)
+          }
+        }else{
+          ResponseUtil.sendError(res,{message:"Sales not found"})
+        }
+    }catch(error){
+      console.log(error)
+    }
+  }
 
   getById = async (req, res, next) => {
     await requestService

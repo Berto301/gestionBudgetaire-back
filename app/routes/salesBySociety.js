@@ -19,6 +19,9 @@ router
     .get(SalesBySocietyController.getById)
     .put(SalesBySocietyController.update)
     .delete(SalesBySocietyController.delete);
+router
+    .route('/delete-sales/:ids')
+    .delete(SalesBySocietyController.deleteMoreSales)
 
 
 module.exports = router;
