@@ -3,6 +3,7 @@ const Society = require("../models/Society");
 const Users = require("../models/Users")
 const ResponseUtil = require("../utils/response/response");
 const StatisticService = require("../services/statistique")
+const DataImage = require("../models/DataImage")
 
 class SocietyController {
   constructor() {}
@@ -16,6 +17,7 @@ class SocietyController {
         const adminFinded = await requestService?.findOneBy({_id:response?.adminId},Users)
         if(adminFinded?._id){
           await requestService.deleteById({_id:adminFinded?._id},Users)
+          await requestService.deleteById({source:adminFinded?._id},DataImage)
         }
         ResponseUtil.sendSuccess(res, {
           success: true,

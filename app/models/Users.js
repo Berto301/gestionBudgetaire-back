@@ -26,8 +26,9 @@ const userSchema = new Schema ( {
     societyId:{
       type: Schema.Types.ObjectId,
       ref: "Society"
-    }
-    //photo
+    },
+
+   
 }, { timestamps: true });
 const Users = mongoose.model ( "Users", userSchema );
 module.exports = Users;

@@ -6,6 +6,7 @@ const ResponseUtil = require("../utils/response/response");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const keys = require("../config/secretKeys");
+const UsersServices = require("../services/users.service")
 
 const stream_users = "reload_information";
 class UsersController {
@@ -17,9 +18,9 @@ class UsersController {
       if(!id) return ResponseUtil.sendError(res,{
         message: "Users not found",
       })
-      const users = await requestService.findOneBy({_id:id},Users)
-      if(users?._id){
-        ResponseUtil.sendSuccess(res,{users})
+      const users = await UsersServices.getById(id)
+      if(users?.[0]?._id){
+        ResponseUtil.sendSuccess(res,{users:users?.[0]})
       }
     } catch (error) {
       console.log("errors on getting data users",error)
@@ -32,12 +33,15 @@ class UsersController {
       const {id} = req.params
       if(!id) return res.json({success:false,message:"Users not found"})
       const usersFinded = await requestService.findOneBy({ _id: id }, Users)
-      const{name,email,phone,firstname} = req.body
+      const{name,email,phone,firstname , photoId} = req.body
       if(usersFinded?._id){
         usersFinded.name= name
         usersFinded.email = email
         usersFinded.phone = phone
         usersFinded.firstname = firstname
+        usersFinded.photoId = photoId || null
+
+        console.log(usersFinded)
         await usersFinded.save()
         .then((users)=>{
           ResponseUtil.sendSuccess(res,users)

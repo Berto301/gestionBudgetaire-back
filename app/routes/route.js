@@ -7,6 +7,7 @@ const societyRoute = require('./society')
 const recipeRoute = require('./recipe')
 const recipeBysociety = require('./recipeBySociety')
 const SalesBySociety = require('./salesBySociety')
+const UploadImage = require('./dataImage')
 const router = express.Router();
 
 
@@ -17,5 +18,6 @@ router.use('/society', societyRoute);
 router.use('/recipe', recipeRoute)
 router.use('/salesBySociety', SalesBySociety);
 router.use('/recipeBysociety', recipeBysociety)
+router.use('/upload', UploadImage)
 
 module.exports = router;

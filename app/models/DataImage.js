@@ -12,9 +12,12 @@ const dataImageSchema = new mongoose.Schema ( {
     location:{
         type: String
     },
-    // bucket:{
-
-    // }
+    source:{
+        type: mongoose.Schema.Types.ObjectId
+    },
+    sourceModel:{
+        type: String
+    }
 }, { timestamps: true });
 const DataImage = mongoose.model ( "DataImage", dataImageSchema );
 module.exports = DataImage;
