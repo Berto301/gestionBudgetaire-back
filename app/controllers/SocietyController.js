@@ -4,6 +4,7 @@ const Users = require("../models/Users")
 const ResponseUtil = require("../utils/response/response");
 const StatisticService = require("../services/statistique")
 const DataImage = require("../models/DataImage")
+const SocietyService = require('../services/society.service')
 
 class SocietyController {
   constructor() {}
@@ -38,6 +39,7 @@ class SocietyController {
     await requestService
       .findOneBy({ _id: req.params.id }, Society)
       .then((_societyData) => {
+       
         ResponseUtil.sendSuccess(res, _societyData );
         next();
       })
@@ -89,7 +91,7 @@ class SocietyController {
   getByGroupId = async (req,res,next) =>{
     try{
       const {id}= req.params
-      const society = await Society.find({groupId:id}).populate("adminId")
+      const society = await SocietyService.getById(id)
       ResponseUtil.sendSuccess(res,society)
       
     }catch(err){

@@ -3,7 +3,7 @@ const mongoose = require ( "mongoose" );
 const Schema = mongoose.Schema;
 const societySchema = new Schema ( {
     name:{
-        type: String
+        type: String  //
     },
     type: {
         type: String

@@ -17,8 +17,7 @@ class DataImageController {
         size:req.file.size
 
     });
-
-   const findExistPhoto = await requestService.findOneAndDeleteBy({source},DataImage)
+    await requestService.findOneAndDeleteBy({source:req.body.source},DataImage) // delete existing file for user
     await photoImage.save().then(result => {
       ResponseUtil.sendSuccess(res,result)
       io.emit("reload_information",req.body.groupId)
@@ -30,5 +29,9 @@ class DataImageController {
             });
     })
 }
+// getImage = async(req,res,next)=>{
+//     const {id} = req.params
+
+// }
 }
 module.exports = new DataImageController();

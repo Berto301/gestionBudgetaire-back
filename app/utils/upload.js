@@ -1,14 +1,13 @@
-let express = require('express'),
-    multer = require('multer'),
-    router = express.Router();
+
+const    multer = require('multer')
+const path = require("path");
 const DIR = '.../../public/';
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, DIR);
     },
     filename: (req, file, cb) => {
-        console.log(file)
-        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        const fileName = Date.now() + path.extname(file.originalname);
         cb(null, Date.now() +fileName)
     }
 });

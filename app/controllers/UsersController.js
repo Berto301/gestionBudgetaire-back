@@ -33,15 +33,12 @@ class UsersController {
       const {id} = req.params
       if(!id) return res.json({success:false,message:"Users not found"})
       const usersFinded = await requestService.findOneBy({ _id: id }, Users)
-      const{name,email,phone,firstname , photoId} = req.body
+      const{name,email,phone,firstname } = req.body
       if(usersFinded?._id){
         usersFinded.name= name
         usersFinded.email = email
         usersFinded.phone = phone
         usersFinded.firstname = firstname
-        usersFinded.photoId = photoId || null
-
-        console.log(usersFinded)
         await usersFinded.save()
         .then((users)=>{
           ResponseUtil.sendSuccess(res,users)

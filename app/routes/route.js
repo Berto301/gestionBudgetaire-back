@@ -19,5 +19,6 @@ router.use('/recipe', recipeRoute)
 router.use('/salesBySociety', SalesBySociety);
 router.use('/recipeBysociety', recipeBysociety)
 router.use('/upload', UploadImage)
+router.use('/public',express.static("public"))
 
 module.exports = router;
