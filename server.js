@@ -5,8 +5,9 @@ var io = require('socket.io')(http);
 const { HOST, PORT, DB} = require('./app/config/db.config');
 const PORT_BACK = process.env.PORT
 const db = require('./app/models');
+const mongodbURI = process.env.mongodbURI || `mongodb://${HOST}:${PORT}/${DB}`
 db.mongoose
-  .connect(`mongodb://${HOST}:${PORT}/${DB}`, {
+  .connect(mongodbURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     autoIndex: false
